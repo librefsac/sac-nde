@@ -1,0 +1,18 @@
+<div ng-if="name === 'Find it @...'">
+    <div ng-hide="$ctrl.parentCtrl.facetGroup.facetGroupCollapsed">
+        <div class="section-content animate-max-height-variable">
+            <div class="md-chips md-chips-wrap">
+                <div ng-repeat="target in targets" aria-live="polite" class="md-chip animate-opacity-and-scale facet-element-marker-local4">
+                    <div class="md-chip-content layout-row" role="button" tabindex="0">
+                        <strong dir="auto" title="{{ target.name }}">
+                            <a ng-href="{{ target.url + target.mapping(queries, filters) }}" target="_blank" class="{{ target.mapping(queries, filters) }}">
+                                <img ng-src="{{ target.img }}" width="21" height="21" alt="{{ target.alt }}" style="vertical-align:middle;"> {{ target.name }}  
+								<img ng-src="{{ target.img_2 }}" alt="{{ target.alt }}" style="vertical-align:middle;">
+                            </a>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
