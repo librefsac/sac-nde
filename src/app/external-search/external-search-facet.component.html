@@ -1,17 +1,38 @@
-@if (links().length) {
-  <section class="external-search" [attr.aria-label]="options.facetName">
-    <h3 class="external-search__title">{{ options.facetName }}</h3>
-    <ul class="external-search__list">
-      @for (link of links(); track link.name) {
-        <li>
-          <a [href]="link.href" target="_blank" rel="noopener noreferrer">
-            @if (link.img) {
-              <img [src]="link.img" [alt]="link.alt ?? ''" height="20" />
-            }
-            <span>{{ link.name }}</span>
-          </a>
-        </li>
-      }
-    </ul>
+@if (isLast() && links().length) {
+  <section class="external-search">
+    <h3 class="external-search__heading">
+      <button
+        type="button"
+        class="external-search__toggle"
+        [attr.aria-expanded]="open()"
+        aria-controls="external-search-list"
+        (click)="open.set(!open())"
+      >
+        <span id="external-search-label">{{ options.facetName }}</span>
+        <svg class="external-search__icon" width="16" height="16" viewBox="0 0 16 16"
+             fill="none" aria-hidden="true" focusable="false">
+          <path d="M0 8H16" />
+          @if (!open()) {
+            <path d="M8 0V16" />
+          }
+        </svg>
+      </button>
+    </h3>
+
+    @if (open()) {
+      <ul id="external-search-list" class="external-search__list" role="list"
+          aria-labelledby="external-search-label">
+        @for (link of links(); track link.name) {
+          <li>
+            <a [href]="link.href" target="_blank" rel="noopener noreferrer">
+              @if (link.img) {
+                <img [src]="link.img" [alt]="link.alt ?? ''" height="20" />
+              }
+              <span>{{ link.name }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    }
   </section>
 }

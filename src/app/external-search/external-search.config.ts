@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { SAPL_ICON, OCPL_ICON } from './external-search.icons';
 
 export interface SearchTarget {
   name: string;
@@ -13,13 +14,19 @@ export interface ExternalSearchOptions {
   searchTargets: SearchTarget[];
 }
 
-/** "any,contains,some term,AND" -> "some term" (tolerates commas inside the term) */
+const FIELDS = /^(any|title|creator|sub|subject|isbn|issn|lsr\d+|rtype)$/i;
+const PRECISIONS = /^(contains|exact|begins_with)$/i;
+
+/** Handles "physics" (NDE simple search) and "any,contains,physics,AND" (VE-style) */
 export function parsePrimoTerm(part: string): string {
   const fields = part.split(',');
-  if (fields.length > 3 && /^(AND|OR|NOT)$/i.test(fields[fields.length - 1])) {
-    fields.pop();
+  if (fields.length >= 3 && FIELDS.test(fields[0]) && PRECISIONS.test(fields[1])) {
+    if (fields.length > 3 && /^(AND|OR|NOT)$/i.test(fields[fields.length - 1])) {
+      fields.pop();
+    }
+    return fields.slice(2).join(',');
   }
-  return fields.slice(2).join(',');
+  return part; // plain term, as in NDE's query=physics
 }
 
 const plainTerms = (queries: string[]): string =>
@@ -34,14 +41,16 @@ export const EXTERNAL_SEARCH_OPTIONS = new InjectionToken<ExternalSearchOptions>
       searchTargets: [
         {
           name: 'Santa Ana Public Library',
-          url: 'https://sapl.tlcdelivers.com/#section=searchresults&term=', // verify, see below
-          alt: 'Santa Ana Public Library',
+          url: 'https://sapl.tlcdelivers.com/#section=search&term={term}&page=0&sortKey=Relevancy&db=ls2pac&branchFilters=[%221%22,%223%22,%224%22,%225%22,%226%22,%227%22,%228%22,%229%22,%2210%22,%2211%22,%2212%22]&facetFilters=[]&audience=[]', // verify, see below
+          img: SAPL_ICON,
+          alt: '',
           mapping: plainTerms,
         },
         {
           name: 'Orange County Public Library',
-          url: 'https://catalog.ocpl.org/client/en_US/default/search/results?qu=', // verify, see below
-          alt: 'Orange County Public Library',
+          url: 'https://catalog.ocpl.org/client/en_US/default/search/results?qu={term}&te=', // verify, see below
+          img: OCPL_ICON, 
+          alt: '',
           mapping: plainTerms,
         },
       ],

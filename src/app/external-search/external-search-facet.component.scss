@@ -1,22 +1,91 @@
-.external-search {
-  padding: 1rem;
+$accent: rgb(184, 32, 20);                  // measured: icon stroke and link color
+$divider: rgba(184, 32, 20, 0.3);           // estimate from the screenshot
+$hover: rgba(39, 24, 21, 0.08);             // matched: light grey hover color
 
-  &__title {
-    margin: 0 0 0.5rem;
-    font-size: 1rem;
+// NDE wraps hooked components in an <ng-component>; let it fill its parent <li>.
+::ng-deep nde-search-filters-side-nav li > ng-component {
+  display: block;
+  width: 100%;
+}
+
+:host {
+  display: block;
+}
+
+.external-search {
+  padding: 12px 0;                          // measured: panel padding
+  border-top: 1px solid $divider;
+  font-size: 16px;
+  line-height: 24px;
+  color: inherit;
+
+  &__heading {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+  }
+
+    &__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    gap: 16px;
+    width: 100%;
+    min-height: 32px;                       // measured: expanded header
+    margin: 0;
+    padding: 0 8px 0 11.2px;
+    border: 0;
+    border-radius: 12px;                    // measured: collapsed header hover
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+    transition: background-color 120ms ease;
+
+    &[aria-expanded='false'] {
+      min-height: 48px;                     // measured: collapsed header
+
+      &:hover {
+        background-color: $hover;           // grey box only while collapsed, like native facet
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid $accent;           // visible focus ring for keyboard users
+      outline-offset: -2px;
+    }
+  }
+
+  &__icon {
+    flex: none;
+
+    path {
+      stroke: $accent;
+      stroke-width: 2;
+    }
   }
 
   &__list {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 0 0 11.2px;
     display: grid;
-    gap: 0.5rem;
+    gap: 4px;                               // 36px rows + 4px gap = native 40px pitch
+
+    li {
+      display: flex;
+      align-items: center;
+      min-height: 36px;                     // puts the first row 34px below the heading
+    }
   }
 
   a {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 8px;
+    color: $accent;
   }
 }
