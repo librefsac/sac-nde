@@ -2,6 +2,7 @@ import { Component, ElementRef, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, interval, map, startWith } from 'rxjs';
 import { EXTERNAL_SEARCH_OPTIONS } from './external-search.config';
+import { installTabBridge } from './external-search.keyboard';
 
 @Component({
   selector: 'app-external-search-facet',
@@ -13,6 +14,9 @@ export class ExternalSearchFacetComponent {
   protected options = inject(EXTERNAL_SEARCH_OPTIONS);
   protected open = signal(true);
   private host = inject<ElementRef<HTMLElement>>(ElementRef);
+    constructor() {
+    installTabBridge();
+  }
 
   // Polls the address bar and checks whether this copy sits after the last filter group.
   private state = toSignal(
